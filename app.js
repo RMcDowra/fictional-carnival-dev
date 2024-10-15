@@ -1,17 +1,56 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const fs = require('fs');
 require('dotenv').config();
 
-const express = require("express");
-const cors = require('cors');
-const routes = require('./server/routes/movieRoutes');
-const PORT = 5000;
-
 const app = express();
+const port = process.env.PORT || 5000;
+const mongoURI = process.env.MONGODB_URI;
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
-app.use('/', routes);
+mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch((err) => {
+    console.error('Error connecting to MongoDB', err);
+});
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+// Middleware to log requests
+app.use((req, res, next) => {
+    const logFilePath = './log.txt'
+    const log = `${new Date().toISOString()} - ${req.method} ${req.url}\n`;
+
+    fs.access(logFilePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            // Create the file if it doesn't exist
+            fs.writeFile(logFilePath, '', (err) => {
+                if (err) {
+                    console.error('Error creating log file:', err);
+                }
+            });
+        }
+
+        // Append the log entry to the file
+        fs.appendFile(logFilePath, log, (err) => {
+            if (err) {
+                console.error('Error writing to log file:', err);
+            }
+        });
+    });
+
+    next();
+});
+
+// Routes
+const movieRoutes = require('./routes/movies');
+
+app.use('/', movieRoutes);
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
