@@ -1,0 +1,40 @@
+* {
+    font-size: 25px;
+  }
+  
+  body {
+    font-family: "VT323", monospace;
+    background-color: grey;
+  }
+  
+  
+  .title-text {
+    color: whitesmoke;
+    font-size: 80px;
+  }
+  
+  .subtitle-text {
+    font-size: 35px;
+  }
+  
+  .postboard {
+    background-color: white;
+    height: 120px;
+    border-radius: 5px;
+    font-size: 30px;
+    color: rgb(96, 137, 214);
+  }
+  
+  a:hover{
+    filter:brightness(95%);
+  }
+  
+  [contenteditable] {
+    outline: 0px solid transparent;
+  }
+  
+  .surround {
+    background-color: white;
+    border-radius: 100%;
+    border: 4px white solid;
+  }
