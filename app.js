@@ -7,50 +7,94 @@ const app = express();
 const port = process.env.PORT || 5000;
 const uri = process.env.MONGODB_URI;
 
-mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('Connected to MongoDB');
-}).catch((err) => {
-    console.error('Error connecting to MongoDB', err);
-});
+app.get('/mongo', async (req, res)=>{
 
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
-
-// Middleware to log requests
-app.use((req, res, next) => {
-    const logFilePath = './log.txt'
-    const log = `${new Date().toISOString()} - ${req.method} ${req.url}\n`;
-
-    fs.access(logFilePath, fs.constants.F_OK, (err) => {
-        if (err) {
-            // Create the file if it doesn't exist
-            fs.writeFile(logFilePath, '', (err) => {
-                if (err) {
-                    console.error('Error creating log file:', err);
-                }
-            });
-        }
-
-        // Append the log entry to the file
-        fs.appendFile(logFilePath, log, (err) => {
-            if (err) {
-                console.error('Error writing to log file:', err);
-            }
-        });
+    await client.connect();
+    console.log("connected?");
+    // Send a ping to confirm a successful connection
+    let result = await client.db("reeds-db").collection("whatever-collection").find({}).toArray()
+      console.log(result);
+  
+      res.render('mongo', {
+        mongoResult: result
+      });
+  
+  })
+  
+  
+  app.get('/', function (req, res) {
+    // res.send('Hello World')
+    res.sendFile('index.html')
+  })
+  
+  app.get('/ejs', (req,res)=>{
+  ``
+    res.render('index', {
+      myServerVariable : "something from server"
     });
-
-    next();
-});
-
-// Routes
-const movieRoutes = require('./routes/movies');
-
-app.use('/', movieRoutes);
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+  
+    //can you get content from client...to console? 
+  })
+  
+  app.get('/read', async (req,res)=> {
+    console.log('in /mongo');
+    await client.connect();
+    
+    console.log('connected?');
+    // Send a ping to confirm a successful connection
+    
+    let result = await client.db("reeds-db").collection("whatever-collection")
+      .find({}).toArray(); 
+    console.log(result); 
+  
+    res.render('mongo', {
+      postData : result
+    });
+  
+  })
+  
+  app.get('/insert', async (req,res)=> {
+  
+    //connect to the db
+    await client.connect();
+    //point to the collection
+    await client.db("reeds-db").collection("whatever-collection").insertOne({post:'hardcoded post insert'});
+    await client.db("reeds-db").collection("whatever-collection").insertOne({ iJustMadeThisUp: 'hardcoded new key '});  
+    // insert into it
+    res.render('insert');
+  
+  });
+  app.post('/update/:id', async (req,res)=>{
+  
+    console.log("req.parms.id: ", req.params.id)
+  
+    client.connect; 
+    const collection = client.db("reeds-db").collection("whatever-collection");
+    let result = await collection.findOneAndUpdate( 
+    {"_id": new ObjectId(req.params.id)}, { $set: {"post": "NEW POST" } }
+  )
+  .then(result => {
+    console.log(result); 
+    res.redirect('/read');
+  })
+  
+  });
+  
+  app.post('/delete/:id', async (req,res)=>{
+  
+    console.log("req.parms.id: ", req.params.id)
+  
+    client.connect; 
+    const collection = client.db("reeds-db").collection("whatever-collection");
+    let result = await collection.findOneAndDelete( 
+    {"_id": new ObjectId(req.params.id)})
+  
+  .then(result => {
+    console.log(result); 
+    res.redirect('/read');
+  })
+  
+    //insert into it
+  
+  })
+  
