@@ -12,7 +12,7 @@ app.get('/mongo', async (req, res)=>{
     await client.connect();
     console.log("connected?");
     // Send a ping to confirm a successful connection
-    let result = await client.db("reeds-db").collection("whatever-collection").find({}).toArray()
+    let result = await client.db("test").collection("movies").find({}).toArray()
       console.log(result);
   
       res.render('mongo', {
@@ -43,7 +43,7 @@ app.get('/mongo', async (req, res)=>{
     console.log('connected?');
     // Send a ping to confirm a successful connection
     
-    let result = await client.db("reeds-db").collection("whatever-collection")
+    let result = await client.db("test").collection("movies")
       .find({}).toArray(); 
     console.log(result); 
   
@@ -58,8 +58,8 @@ app.get('/mongo', async (req, res)=>{
     //connect to the db
     await client.connect();
     //point to the collection
-    await client.db("reeds-db").collection("whatever-collection").insertOne({post:'hardcoded post insert'});
-    await client.db("reeds-db").collection("whatever-collection").insertOne({ iJustMadeThisUp: 'hardcoded new key '});  
+    await client.db("test").collection("movies").insertOne({post:'hardcoded post insert'});
+    await client.db("test").collection("movies").insertOne({ iJustMadeThisUp: 'hardcoded new key '});  
     // insert into it
     res.render('insert');
   
@@ -69,7 +69,7 @@ app.get('/mongo', async (req, res)=>{
     console.log("req.parms.id: ", req.params.id)
   
     client.connect; 
-    const collection = client.db("reeds-db").collection("whatever-collection");
+    const collection = client.db("test").collection("movies");
     let result = await collection.findOneAndUpdate( 
     {"_id": new ObjectId(req.params.id)}, { $set: {"post": "NEW POST" } }
   )
@@ -85,7 +85,7 @@ app.get('/mongo', async (req, res)=>{
     console.log("req.parms.id: ", req.params.id)
   
     client.connect; 
-    const collection = client.db("reeds-db").collection("whatever-collection");
+    const collection = client.db("test").collection("movies");
     let result = await collection.findOneAndDelete( 
     {"_id": new ObjectId(req.params.id)})
   
