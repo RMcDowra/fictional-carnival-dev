@@ -97,4 +97,4 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-module.
+module.exports = router;
