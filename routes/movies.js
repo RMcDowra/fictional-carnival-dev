@@ -4,9 +4,10 @@ const Movie = require('../models/movie');
 const methodOverride = require('method-override');
 
 const genreOptions = [
-    "Action", "Romance", "Fantasy", "Drama",
-    "Crime", "Adventure", "Thriller",
-    "Sci-fi", "Family"
+    "Action", "Adventure", "Crime", "Drama", 
+    "Family", "Fantasy", "Horror", "Romance", 
+    "Thriller", "Sci-fi"
+    
 ];
 
 
